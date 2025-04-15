@@ -1,1 +1,0 @@
-// Simulatie van gebuild JavaScript
