@@ -1,12 +1,78 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lesmateriaal PAV & NCZ</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    h1 { font-size: 2rem; }
+    .vak { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; }
+    .kalender { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 1rem; }
+    .dag { border: 1px solid #ddd; min-height: 60px; padding: 5px; cursor: pointer; border-radius: 4px; }
+    .dag:hover { background-color: #eef; }
+    .kop { font-weight: bold; margin-bottom: 0.5rem; }
+    iframe { width: 100%; height: 300px; border: none; margin-top: 1rem; }
+  </style>
 </head>
 <body>
-  <noscript>Je browser ondersteunt geen JavaScript!</noscript>
-  <div id="root">React werkt! ✅</div>
-  <script src="static/js/main.js"></script>
+  <h1>📘 Lesmateriaal PAV & NCZ</h1>
+
+  <div class="vak">
+    <div class="kop">PAV</div>
+    <a href="https://1drv.ms/f/c/ae0c1f8043d70d03/EgEz6ecyRyZCgD7SJBGmoIcBKrvz3w5v1TNOUNW-aTIRKA?e=Rnk5V7" target="_blank">📁 OneDrive</a><br>
+    <a href="https://drive.proton.me/urls/6925FBFQ1C#iaYSroxmvzjQ" target="_blank">📁 Proton Drive</a>
+    <iframe src="https://www.bookwidgets.com/play/BDJ9C7?teacher_id=6741049993267200"></iframe>
+  </div>
+
+  <div class="vak">
+    <div class="kop">NCZ</div>
+    <a href="https://1drv.ms/f/c/ae0c1f8043d70d03/Evj2ieG5HOhPtD9IN3NZ-M8Bsr0VkIJylyoOmav8U2n4JQ?e=FpMX4Q" target="_blank">📁 OneDrive</a><br>
+    <a href="https://drive.proton.me/urls/WQQF0QWKP4#SJ3cnG6TnRL9" target="_blank">📁 Proton Drive</a>
+  </div>
+
+  <div class="vak">
+    <div class="kop">🤖 Chattie de Chatbot</div>
+    <a href="https://jonateniers.github.io/chattie-de-chatbot/" target="_blank">Bezoek Chattie</a>
+  </div>
+
+  <div class="vak">
+    <div class="kop">📅 Kalender</div>
+    <div id="kalender" class="kalender"></div>
+  </div>
+
+  <script>
+    const kalenderEl = document.getElementById("kalender");
+    const dagen = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+    const maand = new Date().getMonth();
+    const jaar = new Date().getFullYear();
+    const maandNamen = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+    document.querySelector(".kop").innerText += ` - ${maandNamen[maand]} ${jaar}`;
+
+    dagen.forEach(d => {
+      const dagKop = document.createElement("div");
+      dagKop.innerHTML = "<strong>" + d + "</strong>";
+      kalenderEl.appendChild(dagKop);
+    });
+
+    const eersteDag = new Date(jaar, maand, 1).getDay();
+    const offset = (eersteDag + 6) % 7;
+    const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+
+    for (let i = 0; i < offset; i++) {
+      kalenderEl.appendChild(document.createElement("div"));
+    }
+
+    for (let d = 1; d <= aantalDagen; d++) {
+      const cel = document.createElement("div");
+      cel.className = "dag";
+      cel.innerText = d;
+      cel.onclick = () => {
+        const txt = prompt("Notitie voor " + d + " " + maandNamen[maand]);
+        if (txt) cel.innerHTML = d + " 📝 " + txt;
+      };
+      kalenderEl.appendChild(cel);
+    }
+  </script>
 </body>
 </html>
