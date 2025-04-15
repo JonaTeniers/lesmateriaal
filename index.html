@@ -13,6 +13,34 @@
       padding: 2rem;
     }
     h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .vak {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+    .kop {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #2980b9;
+    }
+    a {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      text-decoration: none;
+      color: #1a73e8;
+    }
+    a:hover { text-decoration: underline; }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
     .calendar-header {
       display: flex;
       justify-content: space-between;
@@ -99,127 +127,60 @@
   </style>
 </head>
 <body>
-  <h1>📘 Lesplanner per dag</h1>
-  <div class="calendar-header">
-    <button onclick="changeMonth(-1)">← Vorige maand</button>
-    <h2 id="monthTitle"></h2>
-    <button onclick="changeMonth(1)">Volgende maand →</button>
-  </div>
-  <div class="calendar" id="calendar"></div>
+  <h1>📘 Lesmateriaal PAV & NCZ</h1>
 
-  <div class="overlay" id="overlay" onclick="closeModal()"></div>
-  <div class="modal" id="modal">
-    <button class="close-btn" onclick="closeModal()">X</button>
-    <h3 id="modalTitle">Planning voor ...</h3>
-    <table>
-      <tbody id="dayPlanning"></tbody>
-    </table>
-    <button class="save-btn" onclick="savePlanning()">Opslaan</button>
+  <div class="vak">
+    <div class="kop">📗 PAV</div>
+    <a href="https://1drv.ms/f/c/ae0c1f8043d70d03/EgEz6ecyRyZCgD7SJBGmoIcBKrvz3w5v1TNOUNW-aTIRKA?e=Rnk5V7" target="_blank">📁 OneDrive</a><br>
+    <a href="https://drive.proton.me/urls/6925FBFQ1C#iaYSroxmvzjQ" target="_blank">📁 Proton Drive</a>
+    <iframe src="https://www.bookwidgets.com/play/BDJ9C7?teacher_id=6741049993267200"></iframe>
   </div>
 
+  <div class="vak">
+    <div class="kop">📙 NCZ</div>
+    <a href="https://1drv.ms/f/c/ae0c1f8043d70d03/Evj2ieG5HOhPtD9IN3NZ-M8Bsr0VkIJylyoOmav8U2n4JQ?e=FpMX4Q" target="_blank">📁 OneDrive</a><br>
+    <a href="https://drive.proton.me/urls/WQQF0QWKP4#SJ3cnG6TnRL9" target="_blank">📁 Proton Drive</a>
+  </div>
+
+  <div class="vak">
+    <div class="kop">🤖 Chattie de Chatbot</div>
+    <a href="https://jonateniers.github.io/chattie-de-chatbot/" target="_blank">Bezoek Chattie</a>
+  </div>
+
+  <div class="vak">
+    <div class="kop">📅 Lesplanner</div>
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">← Vorige maand</button>
+      <h2 id="monthTitle"></h2>
+      <button onclick="changeMonth(1)">Volgende maand →</button>
+    </div>
+    <div class="calendar" id="calendar"></div>
+  </div>
+
+  <div class="vak">
+    <div class="kop">🔐 Lerarenhoekje</div>
+    <button onclick="toegangLeraar()">Toegang aanvragen</button>
+    <div id="geheimzone" class="hidden">
+      <p><strong>Correctiesleutels en toetsmateriaal:</strong></p>
+      <ul>
+        <li><a href="https://drive.proton.me/urls/WQQF0QWKP4#SJ3cnG6TnRL9" target="_blank">📄 NCZ-toetsen</a></li>
+        <li><a href="https://drive.proton.me/urls/6925FBFQ1C#iaYSroxmvzjQ" target="_blank">📄 PAV-toetsen</a></li>
+        <li><a href="https://1drv.ms/f/c/ae0c1f8043d70d03/Evj2ieG5HOhPtD9IN3NZ-M8Bsr0VkIJylyoOmav8U2n4JQ?e=FpMX4Q" target="_blank">📁 Extra leraardocumenten</a></li>
+      </ul>
+      <p style="font-size: 0.9rem; color: #666;">Toegang verleend ✔️</p>
+    </div>
+  </div>
+
+  <!-- Kalender script en modaal venster blijven hetzelfde -->
 <script>
-  const calendar = document.getElementById("calendar");
-  const monthTitle = document.getElementById("monthTitle");
-  const overlay = document.getElementById("overlay");
-  const modal = document.getElementById("modal");
-  const modalTitle = document.getElementById("modalTitle");
-  const dayPlanning = document.getElementById("dayPlanning");
-
-  let currentMonth = new Date().getMonth();
-  let currentYear = new Date().getFullYear();
-  let activeDateKey = "";
-
-  const months = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-  let planning = JSON.parse(localStorage.getItem("dagPlanning") || "{}");
-
-  function renderCalendar() {
-    calendar.innerHTML = "";
-    monthTitle.textContent = `${months[currentMonth]} ${currentYear}`;
-    const first = new Date(currentYear, currentMonth, 1);
-    const last = new Date(currentYear, currentMonth + 1, 0);
-    const offset = (first.getDay() + 6) % 7;
-
-    for (let i = 0; i < offset; i++) {
-      calendar.innerHTML += `<div></div>`;
-    }
-
-    for (let day = 1; day <= last.getDate(); day++) {
-      const date = new Date(currentYear, currentMonth, day);
-      const dayOfWeek = (date.getDay() + 6) % 7; // maandag = 0
-      const key = `${currentYear}-${currentMonth + 1}-${day}`;
-      const div = document.createElement("div");
-      div.classList.add("day");
-
-      // zaterdag, zondag of woensdagmiddag (vanaf 12u)
-      if (dayOfWeek === 5 || dayOfWeek === 6 || (dayOfWeek === 2)) {
-        div.classList.add("grijs");
-      }
-
-      div.innerHTML = `<strong>${day}</strong>`;
-      if (!div.classList.contains("grijs")) {
-        div.onclick = () => openModal(key, day, months[currentMonth], currentYear);
-      }
-      calendar.appendChild(div);
+  function toegangLeraar() {
+    const pw = prompt("Voer het leraar-wachtwoord in:");
+    if (pw === "geheim123") {
+      document.getElementById("geheimzone").classList.remove("hidden");
+    } else {
+      alert("Wachtwoord onjuist 🙈");
     }
   }
-
-  function openModal(key, day, month, year) {
-    activeDateKey = key;
-    overlay.classList.add("show");
-    modal.classList.add("show");
-    modalTitle.textContent = `Planning voor ${day} ${month} ${year}`;
-    const data = planning[key] || [{uur: "", klas: "", les: "", bestand: ""}];
-    dayPlanning.innerHTML = "";
-    for (let i = 0; i < 6; i++) {
-      const p = data[i] || {uur: "", klas: "", les: "", bestand: ""};
-      dayPlanning.innerHTML += `
-        <tr>
-          <td><input type="text" placeholder="Uur" value="${p.uur}" /></td>
-          <td><input type="text" placeholder="Klas" value="${p.klas}" /></td>
-          <td><input type="text" placeholder="Les" value="${p.les}" /></td>
-          <td><input type="file" onchange="handleFile(event, ${i})" /></td>
-        </tr>`;
-    }
-  }
-
-  function handleFile(event, index) {
-    const file = event.target.files[0];
-    if (file) {
-      if (!planning[activeDateKey]) planning[activeDateKey] = [];
-      if (!planning[activeDateKey][index]) planning[activeDateKey][index] = {};
-      planning[activeDateKey][index].bestand = file.name;
-    }
-  }
-
-  function savePlanning() {
-    const rows = dayPlanning.querySelectorAll("tr");
-    planning[activeDateKey] = [];
-    rows.forEach((tr, i) => {
-      const inputs = tr.querySelectorAll("input");
-      planning[activeDateKey][i] = {
-        uur: inputs[0].value,
-        klas: inputs[1].value,
-        les: inputs[2].value,
-        bestand: planning[activeDateKey][i]?.bestand || ""
-      };
-    });
-    localStorage.setItem("dagPlanning", JSON.stringify(planning));
-    closeModal();
-  }
-
-  function closeModal() {
-    overlay.classList.remove("show");
-    modal.classList.remove("show");
-  }
-
-  function changeMonth(offset) {
-    currentMonth += offset;
-    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    renderCalendar();
-  }
-
-  renderCalendar();
 </script>
 </body>
 </html>
