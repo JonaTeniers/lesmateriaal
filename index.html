@@ -8,29 +8,27 @@
   <style>
     body {
       font-family: 'Nunito', sans-serif;
-      background-color: #f7f9fc;
-      color: #333;
+      background-color: #f4f6f9;
+      color: #2c3e50;
       margin: 0;
       padding: 2rem;
     }
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      color: #2c3e50;
+      font-size: 2.4rem;
+      margin-bottom: 2rem;
     }
     .vak {
-      background: white;
-      border: 1px solid #e0e0e0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      background: #fff;
+      border-radius: 12px;
       padding: 1.5rem;
-      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       margin-bottom: 2rem;
     }
     .kop {
-      font-weight: 800;
-      font-size: 1.3rem;
-      color: #2980b9;
+      font-size: 1.4rem;
+      font-weight: 700;
       margin-bottom: 1rem;
+      color: #2980b9;
     }
     a {
       display: inline-block;
@@ -45,31 +43,37 @@
       width: 100%;
       height: 300px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
       margin-top: 1rem;
     }
     .kalender {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
     .dag {
-      border: 1px solid #dcdcdc;
-      border-radius: 6px;
       background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px;
       min-height: 70px;
-      padding: 6px;
-      cursor: pointer;
       font-size: 0.9rem;
+      cursor: pointer;
     }
     .dag:hover {
-      background: #ecf6ff;
+      background: #ecf0f1;
     }
     .header {
       font-weight: bold;
       text-align: center;
-      margin-bottom: 0.3rem;
     }
+    .lerarenhoekje {
+      background: #fef6e4;
+      border-left: 6px solid #f1c40f;
+      padding: 1.5rem;
+      border-radius: 10px;
+    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -98,12 +102,35 @@
     <div class="kalender" id="kalender"></div>
   </div>
 
+  <div class="vak lerarenhoekje">
+    <div class="kop">🔐 Lerarenhoekje</div>
+    <button onclick="toegangLeraar()">Toegang aanvragen</button>
+    <div id="geheimzone" class="hidden">
+      <p><strong>Correctiesleutels en toetsmateriaal:</strong></p>
+      <ul>
+        <li><a href="https://drive.proton.me/urls/WQQF0QWKP4#SJ3cnG6TnRL9" target="_blank">📄 NCZ-toetsen</a></li>
+        <li><a href="https://drive.proton.me/urls/6925FBFQ1C#iaYSroxmvzjQ" target="_blank">📄 PAV-toetsen</a></li>
+        <li><a href="https://1drv.ms/f/c/ae0c1f8043d70d03/Evj2ieG5HOhPtD9IN3NZ-M8Bsr0VkIJylyoOmav8U2n4JQ?e=FpMX4Q" target="_blank">📁 Extra leraardocumenten</a></li>
+      </ul>
+      <p style="font-size: 0.9rem; color: #666;">Toegang verleend ✔️</p>
+    </div>
+  </div>
+
   <script>
+    function toegangLeraar() {
+      const pw = prompt("Voer het leraar-wachtwoord in:");
+      if (pw === "geheim123") {
+        document.getElementById("geheimzone").classList.remove("hidden");
+      } else {
+        alert("Wachtwoord onjuist 🙈");
+      }
+    }
+
     const kalender = document.getElementById("kalender");
     const dagen = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
     const maand = new Date().getMonth();
     const jaar = new Date().getFullYear();
-    const maandNamen = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+    const maandNamen = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"]
 
     dagen.forEach(d => {
       const el = document.createElement("div");
