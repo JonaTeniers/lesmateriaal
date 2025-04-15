@@ -4,29 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lesmateriaal PAV & NCZ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    h1 { font-size: 2rem; }
-    .vak { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; }
-    .kalender { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 1rem; }
-    .dag { border: 1px solid #ddd; min-height: 60px; padding: 5px; cursor: pointer; border-radius: 4px; }
-    .dag:hover { background-color: #eef; }
-    .kop { font-weight: bold; margin-bottom: 0.5rem; }
-    iframe { width: 100%; height: 300px; border: none; margin-top: 1rem; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: #2c3e50;
+    }
+    .vak {
+      background: white;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    .kop {
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #2980b9;
+      margin-bottom: 1rem;
+    }
+    a {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      text-decoration: none;
+      color: #1a73e8;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+    .kalender {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .dag {
+      border: 1px solid #dcdcdc;
+      border-radius: 6px;
+      background: #fff;
+      min-height: 70px;
+      padding: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .dag:hover {
+      background: #ecf6ff;
+    }
+    .header {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
   </style>
 </head>
 <body>
   <h1>📘 Lesmateriaal PAV & NCZ</h1>
 
   <div class="vak">
-    <div class="kop">PAV</div>
+    <div class="kop">📗 PAV - April 2025</div>
     <a href="https://1drv.ms/f/c/ae0c1f8043d70d03/EgEz6ecyRyZCgD7SJBGmoIcBKrvz3w5v1TNOUNW-aTIRKA?e=Rnk5V7" target="_blank">📁 OneDrive</a><br>
     <a href="https://drive.proton.me/urls/6925FBFQ1C#iaYSroxmvzjQ" target="_blank">📁 Proton Drive</a>
     <iframe src="https://www.bookwidgets.com/play/BDJ9C7?teacher_id=6741049993267200"></iframe>
   </div>
 
   <div class="vak">
-    <div class="kop">NCZ</div>
+    <div class="kop">📙 NCZ</div>
     <a href="https://1drv.ms/f/c/ae0c1f8043d70d03/Evj2ieG5HOhPtD9IN3NZ-M8Bsr0VkIJylyoOmav8U2n4JQ?e=FpMX4Q" target="_blank">📁 OneDrive</a><br>
     <a href="https://drive.proton.me/urls/WQQF0QWKP4#SJ3cnG6TnRL9" target="_blank">📁 Proton Drive</a>
   </div>
@@ -38,40 +95,40 @@
 
   <div class="vak">
     <div class="kop">📅 Kalender</div>
-    <div id="kalender" class="kalender"></div>
+    <div class="kalender" id="kalender"></div>
   </div>
 
   <script>
-    const kalenderEl = document.getElementById("kalender");
+    const kalender = document.getElementById("kalender");
     const dagen = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
     const maand = new Date().getMonth();
     const jaar = new Date().getFullYear();
     const maandNamen = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
-    document.querySelector(".kop").innerText += ` - ${maandNamen[maand]} ${jaar}`;
 
     dagen.forEach(d => {
-      const dagKop = document.createElement("div");
-      dagKop.innerHTML = "<strong>" + d + "</strong>";
-      kalenderEl.appendChild(dagKop);
+      const el = document.createElement("div");
+      el.className = "header";
+      el.textContent = d;
+      kalender.appendChild(el);
     });
 
     const eersteDag = new Date(jaar, maand, 1).getDay();
     const offset = (eersteDag + 6) % 7;
-    const aantalDagen = new Date(jaar, maand + 1, 0).getDate();
+    const dagenInMaand = new Date(jaar, maand + 1, 0).getDate();
 
     for (let i = 0; i < offset; i++) {
-      kalenderEl.appendChild(document.createElement("div"));
+      kalender.appendChild(document.createElement("div"));
     }
 
-    for (let d = 1; d <= aantalDagen; d++) {
+    for (let d = 1; d <= dagenInMaand; d++) {
       const cel = document.createElement("div");
       cel.className = "dag";
       cel.innerText = d;
       cel.onclick = () => {
-        const txt = prompt("Notitie voor " + d + " " + maandNamen[maand]);
-        if (txt) cel.innerHTML = d + " 📝 " + txt;
+        const note = prompt("Notitie voor " + d + " " + maandNamen[maand]);
+        if (note) cel.innerHTML = d + " 📝 " + note;
       };
-      kalenderEl.appendChild(cel);
+      kalender.appendChild(cel);
     }
   </script>
 </body>
